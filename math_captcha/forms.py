@@ -26,16 +26,18 @@ def math_clean(form):
         assert len(test_secret) == 40 and question
     except (TypeError, AssertionError):
         # problem decoding, junky data
-        raise forms.ValidationError('Invalid token')
+        form._errors['math_captcha_field'] = form.error_class(["Invalid token"])
+        del form.cleaned_data['math_captcha_field']
     except KeyError:
         return
 
     if encode(question) != form.cleaned_data['math_captcha_question']:
         # security problem, hack attempt
-        raise forms.ValidationError('Invalid token')
+        form._errors['math_captcha_field'] = form.error_class(["Invalid token"])
+        del form.cleaned_data['math_captcha_field']
     if eval(question) != value:
-        raise forms.ValidationError('Wrong answer, try again')
-
+        form._errors['math_captcha_field'] = form.error_class(["Wrong answer, try again"])
+        del form.cleaned_data['math_captcha_field']
 
 class MathCaptchaModelForm(forms.ModelForm):
     """
