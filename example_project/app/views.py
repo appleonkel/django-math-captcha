@@ -1,14 +1,11 @@
-from django.shortcuts import render_to_response
-from forms import Form
+from django.views.generic.edit import FormView
+from .forms import Form
 
-def form(request):
-    if request.method == 'POST':
-        form = Form(request.POST)
-        if form.is_valid():
-            return render_to_response('form.html',{'m':'woo hoo'})
-    else:
-        form = Form()
 
-    return render_to_response('form.html', {
-        'form': form,
-    })
+class View(FormView):
+    template_name = 'form.html'
+    form_class = Form
+    success_url = '/valid/'
+
+    def form_valid(self, form):
+        return super().form_valid(form)
