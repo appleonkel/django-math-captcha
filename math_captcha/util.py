@@ -3,7 +3,7 @@ from django.conf import settings as djsettings
 from random import choice
 from binascii import hexlify, unhexlify
 
-import settings
+from . import settings
 
 
 def question():
@@ -13,7 +13,8 @@ def question():
         # avoid negative answers
         n1, n2 = n2, n1
 
-    return "%s %s %s" % (n1, choice(settings.OPERATORS), n2)
+    question_str = "%s %s %s" % (n1, choice(settings.OPERATORS), n2)
+    return question_str.encode('utf-8')
     
 def encode(question):
     """
@@ -22,7 +23,8 @@ def encode(question):
     To the end user it looks like an extra long hex string, but it cryptographically ensures
     against any tampering. 
     """
-    return sha1(djsettings.SECRET_KEY + question).hexdigest() + hexlify(question)
+    question_hex = hexlify(question).decode()
+    return sha1(djsettings.SECRET_KEY.encode() + question).hexdigest() + question_hex 
     
 def decode(answer):
     """
