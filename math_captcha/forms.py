@@ -1,8 +1,8 @@
 from django import forms
 
-from fields import MathField
-from util import encode, decode
-import settings
+from .fields import MathField
+from .util import encode, decode
+from . import settings
 
 
 class NullWidget(forms.widgets.HiddenInput):
