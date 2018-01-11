@@ -1,7 +1,7 @@
 from django import forms
 
 from .fields import MathField
-from .util import encode, decode
+from .util import captchaencode, captchadecode
 from . import settings
 
 
@@ -21,9 +21,9 @@ def math_clean(form):
     """
     try:
         value = form.cleaned_data['math_captcha_field']
-        test_secret, question = decode(
+        test_secret, question = captchadecode(
             form.cleaned_data['math_captcha_question'])
-        assert len(test_secret) == 40 and question
+        assert len(test_secret) == 40 and question.decode()
     except (TypeError, AssertionError):
         # problem decoding, junky data
         form._errors['math_captcha_field'] = form.error_class(["Invalid token"])
@@ -31,7 +31,7 @@ def math_clean(form):
     except KeyError:
         return
 
-    if encode(question) != form.cleaned_data['math_captcha_question']:
+    if captchaencode(question) != form.cleaned_data['math_captcha_question']:
         # security problem, hack attempt
         form._errors['math_captcha_field'] = form.error_class(["Invalid token"])
         del form.cleaned_data['math_captcha_field']

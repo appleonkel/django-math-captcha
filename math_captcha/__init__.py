@@ -1,1 +1,1 @@
-from forms import MathCaptchaForm, MathCaptchaModelForm
+from .forms import MathCaptchaForm, MathCaptchaModelForm
